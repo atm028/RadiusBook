@@ -1,0 +1,46 @@
+digraph g {
+    graph [fontsize=8 labelloc="t" label="" splines=true overlap=false rankdir="TR"];
+
+    "Book" [
+        shape = "box"
+        penwidth = 1
+    ]
+    "Bookshelf" [
+        shape="box"
+        penwidth = 1
+    ]
+    "Redis" [
+        style = "filled"
+        penwidth = 1
+        shape = "oval"
+    ]
+    "BookHandler" [
+        shape = "box"
+        penwidth = 1
+    ]
+    "BookshelfHandler" [
+        shape = "Msquare"
+        penwidth = 1
+    ]
+    "DB" [
+        shape="cylinder"
+        penwidth=1
+    ]
+
+    "RedisEvent" [
+        shape="component"
+        penwidth = 1
+        label = <
+            <table border="0" cellborder="0" cellpadding="3">
+                <tr><td><font size="1">evtNewBook</font></td></tr>
+            </table>
+        >
+    ]
+
+    Book -> Redis [penwidth = 1 fontsize = 3 fontcolor="black" label = "evtBook"]
+    Bookshelf -> Redis [penwidth = 1 fontsize = 3 fontcolor="black" label = "evtBookshelf"]
+    Redis -> BookHandler [penwidtht = 1 fontsize = 3 fontcolor = black label="evtBook"]
+    Redis -> BookshelfHandler [penwidtht = 1 fontsize = 3 fontcolor = black label="evtBookshelf"]
+    BookHandler -> DB
+    BookshelfHandler -> DB
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Common",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "nconf": "^0.11.2",
+    "nconf-yaml": "^1.0.2"
+  }
+}

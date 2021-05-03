@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["es6"],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "outDir": "bin",
+    "baseUrl": "./",
+    "paths": {
+      "@domains/*": ["Domain/*"],
+      "@app/*": ["Applications/*"],
+      "@common/*": ["Common/*"],
+      "@infra/*": ["Infrastructure/*"],
+      "@present/*": ["Presentation/*"],
+      "@persist/*": ["Persistence/*"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

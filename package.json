@@ -1,0 +1,21 @@
+{
+  "name": "RadiusBook",
+  "version": "0.0.1",
+  "description": "Service to share and collect books, articles and so on between users",
+  "main": "index.ts",
+  "author": "Timur Morozov",
+  "license": "MIT",
+  "private": "true",
+  "dependencies": {
+    "lerna": "^4.0.0"
+  },
+  "workspaces": [
+    "Applications/*"
+  ],
+  "scripts": {
+    "booker": "lerna run Booker --stream --scope Booker",
+    "bookCreator": "lerna run BookCreator --stream --scope Booker",
+    "bootstrap": "lerna bootstrap",
+    "lint": "eslint --ext .ts ."
+  }
+}

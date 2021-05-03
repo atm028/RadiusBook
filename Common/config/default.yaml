@@ -1,0 +1,9 @@
+booker:
+  port: 9090
+  level: 'DEBUG'
+db:
+  dialect:    "postgres"
+  dbname:         "booker"
+  username:   "booker"
+  password:   "booker"
+  schema:     "booker"
