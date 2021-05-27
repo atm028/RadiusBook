@@ -31,8 +31,7 @@ export default class BookQueryResolver {
     ): Promise<Number> {
         console.log("Book created: ", name, author, source)
         const book = new Book({ name, author, source })
-        this.cache.publish("BOOKER_TEST", JSON.stringify(book), "*")
-        //const result = await this.repo.save(book)
+        this.cache.postNewBook(JSON.stringify(book))
         return 0
     }
 }

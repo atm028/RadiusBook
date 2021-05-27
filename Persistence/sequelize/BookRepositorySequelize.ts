@@ -39,6 +39,8 @@ export class BookRepositorySequelize implements IBookRepository {
         try {
             //TODO: fix misstyping
             // @ts-ignore
+            const { db: { dialect, dbname, username, password, schema } } = this.config
+            console.log('dialect: ', dialect)
             const Model = factoryBookModel({ dialect, dbname, username, password, tablename, schema })
             const model = new Model({ name: book.name, author: book.author, source: book.source })
             await model.save()

@@ -66,6 +66,34 @@ export default class StreamEventBroker extends EventEmitter {
         }
     }
 
+    async readGrouStream(): Promise<void> {
+        console.log("started readGrouStream")
+        while (true) {
+            const message = await this._redisService.xreadgroup(
+                'GROUP',
+                'book-parsers',
+                'parser1',
+                'COUNT',
+                1,
+                'BLOCK',
+                10,
+                'STREAMS',
+                'book-stream',
+                '>'
+            )
+            if(message) {
+                //TODO: avoid magic indexes
+                const channel = message[0][0]
+                console.log("emit to ", channel)
+                this.emit("BOOK_PARSERS", message[0][1][0])
+            }
+        }
+    }
+
+    async ack(id:string): Promise<boolean> {
+        return this._redisService.xack("book-stream", "book-parsers", id)
+    }
+
     async publish(channel: string, message: string, messageId: string = "*") {
         console.log("XADD: ", channel)
         const r = await this._redisService.xadd(channel, 'MAXLEN', '~', 500, messageId, 'e', message)
