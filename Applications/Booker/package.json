@@ -14,6 +14,7 @@
     "express-graphql": "^0.12.0",
     "graphql": "^15.5.0",
     "inversify": "^5.0.5",
+    "ioredis": "^4.27.3",
     "nconf": "^0.11.2",
     "nconf-yaml": "^1.0.2",
     "pg": "^8.6.0",

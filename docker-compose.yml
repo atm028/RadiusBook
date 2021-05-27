@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  redis:
+    image: "redis:6.2.3"
+    container_name: "booker_redis"
+    restart: always
+    ports:
+      - 6379:6379
+  postgres:
+    image: "postgres:13.3"
+    container_name: "booker_postgres"
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=booker
+  booker:
+    image: "dev_booker:latest"
+    container_name: "booker"
+    restart: always
+    ports:
+      - 9090:9090
+  book-parser:
+    image: "dev_bookparser:latest"
+    container_name: "booker-bookparser"
+    restart: always
+    ports:
+      - 9091:9091

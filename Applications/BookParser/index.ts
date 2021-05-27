@@ -24,7 +24,7 @@ import BookCacheHandler from "@app/BookParser/queries/BookCacheHandler";
 const main = async () => {
     const server = express()
     const container = await Container()
-    const { booker: { port }} = container.get<ConfigurationServiceNS.Implementation>(ConfigurationServiceNS.Type)
+    const { bookparser: { port }} = container.get<ConfigurationServiceNS.Implementation>(ConfigurationServiceNS.Type)
     const cache = container.get<IBookEventService>(BookEventServiceType)
     await cache.startGroupStream()
 

@@ -7,7 +7,6 @@
   "license": "MIT",
   "private": "true",
   "dependencies": {
-    "ioredis": "^4.27.3",
     "lerna": "^4.0.0"
   },
   "workspaces": [
