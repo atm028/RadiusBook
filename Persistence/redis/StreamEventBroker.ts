@@ -1,6 +1,7 @@
 import { EventEmitter } from "events"
 import { Redis } from "ioredis"
 import { map, last } from "ramda"
+import {IRedisConfiguration} from "@persist/redis/config/service";
 
 export type Subscription = {
     lastId: string
@@ -9,16 +10,18 @@ export type Subscription = {
 
 export default class StreamEventBroker extends EventEmitter {
     private readonly _redisService: Redis
-    private readonly _channelNamePrefix: string
+    private readonly _redisConfiguration: IRedisConfiguration
     private _subscribtions: Map<string, Subscription>
 
-    constructor(redisService: Redis, channelNamePrefix: string) {
+    constructor(
+        redisService: Redis,
+        cfg: IRedisConfiguration
+    ) {
         super()
         this._redisService = redisService.duplicate()
         //TODO: add prefix usage
-        this._channelNamePrefix = channelNamePrefix
         this._redisService.client('id')
-
+        this._redisConfiguration = cfg
         this._subscribtions = new Map<string, Subscription>()
 
         this._redisService.on( "error", err => this.emit("error", err) )
@@ -68,17 +71,23 @@ export default class StreamEventBroker extends EventEmitter {
 
     async readGrouStream(): Promise<void> {
         console.log("started readGrouStream")
+        try {
+            await this._redisService.xgroup('CREATE', 'book-stream', 'book-parsers', '$', 'MKSTREAM')
+        } catch (err) {
+            console.log('readGrouStream: xgroup: create: ', err)
+        }
+
         while (true) {
             const message = await this._redisService.xreadgroup(
                 'GROUP',
-                'book-parsers',
-                'parser1',
+                'book-parsers', //TODO: get group name from config
+                this._redisConfiguration.consumer,
                 'COUNT',
                 1,
                 'BLOCK',
                 10,
                 'STREAMS',
-                'book-stream',
+                'book-stream', //TODO: get stream name from config
                 '>'
             )
             if(message) {

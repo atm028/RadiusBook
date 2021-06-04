@@ -20,6 +20,8 @@ type BookModel = typeof Model & {
 // @ts-ignore
 const factory: BookModel<IBookModel> = (
     {
+        host,
+        port,
         dialect,
         db,
         username,
@@ -27,6 +29,8 @@ const factory: BookModel<IBookModel> = (
         tablename,
         schema
     }: {
+        host: string,
+        port: number,
         dialect: string;
         db: string;
         username: string;
@@ -35,8 +39,13 @@ const factory: BookModel<IBookModel> = (
         schema: string;
     }) => {
     try {
+        console.log('BookModel params: ', host, port, dialect, db, username, password, schema)
         // @ts-ignore
-        const sequelize = new Sequelize(db, username, password, {dialect: dialect})
+        const sequelize = new Sequelize(db, username, password, {
+                dialect: dialect,
+                host: host,
+                port: port
+            })
         return sequelize.define(
             'BookModel',
             {

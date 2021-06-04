@@ -3,10 +3,19 @@ import { Provider } from "nconf"
 export interface IBookerAppConfiguration {
     port: number
     level: string
+    name: string
 }
 
 export class BookerAppConfiguration implements IBookerAppConfiguration {
     constructor(private readonly config: Provider) {}
+
+    get name(): string {
+        let name = process.env.APP_NAME
+        if( name !== undefined ) return String(name).toLowerCase()
+        name = this.config.get('booker:name')
+        if( name !== undefined ) return String(name).toLowerCase()
+        return "booker"
+    }
 
     get port(): number { return Number(this.config.get("booker:port")) }
 

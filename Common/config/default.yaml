@@ -3,7 +3,7 @@ booker:
   level: 'DEBUG'
 db:
   dialect:    "postgres"
-  dbname:         "booker"
+  dbname:     "booker"
   username:   "booker"
   password:   "booker"
   schema:     "booker"

@@ -17,23 +17,39 @@ export interface IBookEventService extends EventEmitter{
     startGroupStream(): Promise<void>
 }
 
+//TODO: implement disaster recovery
+/*
+Resources:
+XPENDING book-stream book-parsers - + 10 parser1
+
+0.0.0.0:6379> XPENDING book-stream book-parsers
+1) (integer) 40
+2) "1622045731639-0"
+3) "1622110837796-0"
+4) 1) 1) "parser1"
+      2) "40"
+0.0.0.0:6379> XPENDING book-stream book-parsers - + 40 parser1
+ */
+//TODO: implement reconnetions to redis and sequelize and error handling
+
+
 @injectable()
 export class BookEventService extends EventEmitter implements IBookEventService {
     private readonly _redis: IORedis
     private readonly _broker: StreamEventBroker
 
     constructor(
-        @inject(ConfigurationServiceNS.Type) private readonly config: ConfigurationServiceNS.Implementation
+        @inject(ConfigurationServiceNS.Type) private readonly config: ConfigurationServiceNS.Implementation,
     ) {
         super()
-        this._redis = new IORedis()
+        this._redis = new IORedis(this.config.redis.port, this.config.redis.host)
         //TODO: get prefix and channel name from config
-        this._broker = new StreamEventBroker(this._redis, "BOOKER_")
+        this._broker = new StreamEventBroker(this._redis, this.config.redis)
         //TODO use channel from config
-        this._broker.on("BOOKER_TEST", (data) => this.emit("BOOKER_TEST", data))
+        this._broker.on("RB_SERVICE", (data) => this.emit("RB_SERVICE", data))
         this._broker.on("BOOK_PARSERS", (data) => this.emit("BOOK_PARSERS", data))
         const _deactivate = async err => console.log("DEACTIVATE: ", err)
-        this.subscribe("BOOKER_TEST")
+        this.subscribe("RB_SERVICE")
         this._broker.readStream().then(_deactivate).catch(_deactivate)
     }
 
