@@ -87,7 +87,7 @@ describe('StreamEventBroker tests', () => {
             done()
         })
         redisEventBroker.publish(channel, JSON.stringify(message))
-            .catch(err => {})
+            .catch(err => { logger.error(err) })
     }, 30000);
 
     it('should restore stream group when no group', done => {

@@ -1,4 +1,4 @@
-import {assert, expect} from "chai"
+import {assert} from "chai"
 import {Container} from "inversify"
 import {ConfigurationServiceNS} from "@common/config/interface";
 import ConfigurationService from "@common/config";

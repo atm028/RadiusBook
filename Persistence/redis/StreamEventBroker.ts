@@ -31,7 +31,6 @@ export default class StreamEventBroker extends EventEmitter {
 
         this._redisService.on( "error", err => this.emit("error", err) )
         this._redisService.on( "ready", () => this.emit("ready"))
-        this._redisService.on( "connect", async () => {} )
     }
 
     async readStream(): Promise<void> {
@@ -125,7 +124,7 @@ export default class StreamEventBroker extends EventEmitter {
     }
 
     async subscribe(channel): Promise<void> {
-        await this._subscribtions.set(channel, {lastId: "0", channel: channel})
+        this._subscribtions.set(channel, {lastId: "0", channel: channel})
     }
 
     async unsubscribe(channel): Promise<void> {

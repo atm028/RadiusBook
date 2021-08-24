@@ -33,7 +33,7 @@ export default class BookQueryResolver {
         @Arg("name") name: string,
         @Arg("author") author: string,
         @Arg("source") source: string
-    ): Promise<Number> {
+    ): Promise<number> {
         this._logger.debug("Book created: ", name, author, source)
         const book = new Book({ name, author, source })
         this.cache.postNewBook(book)

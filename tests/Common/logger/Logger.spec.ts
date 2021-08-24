@@ -1,10 +1,9 @@
 import {assert, expect} from 'chai'
-import {ILoggerConfiguration, LoggerConfiguration} from "@common/logger/config";
+import {LoggerConfiguration} from "@common/logger/config";
 import {Container} from 'inversify'
 import {ConfigurationServiceNS} from "@common/config/interface";
 import ConfigurationService from "@common/config";
 import {ILogger, Logger, LoggerType} from "@common/logger"
-import base = Mocha.reporters.base;
 
 const container = new Container()
 container.bind<ConfigurationServiceNS.Implementation>(ConfigurationServiceNS.Type).toConstantValue((ConfigurationService))
@@ -34,7 +33,6 @@ describe('LoggerConfiguration', () => {
     })
 
     it('should provide correct log level from env variable', async () => {
-        const tmp = process.env.LOG_LEVEL
         const level = 'trace'
         process.env.LOG_LEVEL = level
         assert.equal(loggerConfig.level, level)
@@ -67,7 +65,6 @@ describe('Logger', () => {
 
     it('should create child logger', async () => {
         expect(baseLogger.children.has('test')).to.be.false
-        const logger = baseLogger.getLogger('test')
         expect(baseLogger.children.has('test')).to.be.true
     })
 

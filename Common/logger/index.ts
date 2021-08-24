@@ -1,10 +1,8 @@
 import "reflect-metadata"
 import * as bunyan from 'bunyan'
 import BunyanFormatWritable from 'bunyan-format'
-import RotatingFileStream from 'bunyan-rotating-file-stream'
 import {inject, injectable} from "inversify";
 import {ConfigurationServiceNS} from "@common/config/interface";
-import * as path from 'path'
 
 export const LoggerType = Symbol.for('Logger')
 
@@ -82,7 +80,7 @@ export class Logger implements ILogger {
         return levels
     }
 
-    setLevel = async (module: string = undefined, level: string): Promise<void> => {
+    setLevel = async (level: string, module: string = undefined): Promise<void> => {
         if(module !== undefined && this.children.has(module)) {
             const log = this.children.get(module)
             log.level(level.toLowerCase())

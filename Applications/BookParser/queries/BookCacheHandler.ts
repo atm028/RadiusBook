@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import {inject, injectable} from "inversify";
 import {BookRepositorySequelizeType, IBookRepository} from "@persist/sequelize/BookRepositorySequelize";
-import { map, without, pathOr } from "ramda"
+import { without, pathOr } from "ramda"
 import Book from "@domains/Book/Book";
 import {ILogger, LoggerType} from "@common/logger";
 import * as bunyan from 'bunyan'
@@ -16,7 +16,7 @@ export default class BookCacheHandler {
     }
 
     async NewBookHandler(data: string): Promise<string> {
-        data.map(r => {})
+        //data.map(r => {})
 
         const id = data[0]
         const rawBook = JSON.parse(without("e", data[1]))
