@@ -3,7 +3,9 @@ import Book from "@domains/Book/Book";
 import factoryBookModel from "./BookModel"
 import { injectable, inject } from "inversify"
 import { ConfigurationServiceNS } from "@common/config/interface";
+import {ILogger, LoggerType} from "@common/logger";
 
+import * as bunyan from 'bunyan'
 const tablename = "books"
 
 export const BookRepositorySequelizeType = Symbol.for('BookRepositorySequelize')
@@ -34,7 +36,15 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA booker TO booker;
 
 @injectable()
 export class BookRepositorySequelize implements IBookRepository {
-    constructor(@inject(ConfigurationServiceNS.Type) private readonly config: ConfigurationServiceNS.Implementation) {
+    private readonly _model: any
+    private readonly _logger: bunyan.Logger
+    constructor(
+        @inject(ConfigurationServiceNS.Type) private readonly config: ConfigurationServiceNS.Implementation,
+        @inject(LoggerType) private readonly logger: ILogger) {
+        const { db: { host, port, dialect, dbname, username, password, schema } } = this.config
+        // @ts-ignore
+        this._model = factoryBookModel({ host, port, dialect, dbname, username, password, tablename, schema })
+        this._logger = logger.getLogger("BookRepositorySequelize")
     }
 
     async findAll(params: IBookFindParams): Promise<Book[]> {
@@ -42,11 +52,7 @@ export class BookRepositorySequelize implements IBookRepository {
     }
 
     async findOne(where: IBookFilter): Promise<Book> {
-        const { db: { host, port, dialect, dbname, username, password, schema } } = this.config
-        console.log('sequielize.findOne params: ', host, port, dialect, dbname, username, password, schema)
-        // @ts-ignore
-        const Model = factoryBookModel({ host, port, dialect, dbname, username, password, tablename, schema })
-        return Model.findOne(where)
+        return this._model.findOne(where)
     }
 
     async count(where: IBookFilter): Promise<number> {
@@ -55,16 +61,12 @@ export class BookRepositorySequelize implements IBookRepository {
 
     async save(book: Book): Promise<boolean> {
         try {
-            //TODO: fix misstyping
-            // @ts-ignore
-            const { db: { host, port, dialect, dbname, username, password, schema } } = this.config
-            const Model = factoryBookModel({ host, port, dialect, dbname, username, password, tablename, schema })
-            const model = new Model({ name: book.name, author: book.author, source: book.source })
+            const model = new this._model({ name: book.name, author: book.author, source: book.source })
             await model.save()
             return true
         } catch (e) {
-           console.log(e)
-           return false
+            this._logger.error(e)
+            return false
         }
     }
 }

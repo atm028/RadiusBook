@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "bunyan": "^1.8.15",
+    "bunyan-format": "^0.2.1",
+    "bunyan-rotating-file-stream": "^2.0.0",
     "nconf": "^0.11.2",
     "nconf-yaml": "^1.0.2"
   }

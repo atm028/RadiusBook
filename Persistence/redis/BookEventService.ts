@@ -5,7 +5,10 @@ import IORedis from "ioredis"
 import { ConfigurationServiceNS } from "@common/config/interface";
 import { decorate, injectable, inject } from "inversify"
 import Book from "@domains/Book/Book";
+import {ILogger, LoggerType} from "@common/logger";
 decorate(injectable(), EventEmitter)
+
+import * as bunyan from 'bunyan'
 
 export const BookEventServiceType = Symbol.for('BookEventService')
 
@@ -37,14 +40,17 @@ XPENDING book-stream book-parsers - + 10 parser1
 export class BookEventService extends EventEmitter implements IBookEventService {
     private readonly _redis: IORedis
     private readonly _broker: StreamEventBroker
+    private readonly _logger: bunyan.Logger
 
     constructor(
         @inject(ConfigurationServiceNS.Type) private readonly config: ConfigurationServiceNS.Implementation,
+        @inject(LoggerType) private readonly logger: ILogger,
     ) {
         super()
+        this._logger = logger.getLogger("BokEventService")
         this._redis = new IORedis(this.config.redis.port, this.config.redis.host)
         //TODO: get prefix and channel name from config
-        this._broker = new StreamEventBroker(this._redis, this.config.redis)
+        this._broker = new StreamEventBroker(this._redis, this.config.redis, logger)
         //TODO use channel from config
         this._broker.on("RB_SERVICE", (data) => this.emit("RB_SERVICE", data))
         this._broker.on("BOOK_PARSERS", (data) => this.emit("BOOK_PARSERS", data))
@@ -54,12 +60,12 @@ export class BookEventService extends EventEmitter implements IBookEventService 
     }
 
     startGroupStream = async(): Promise<void> => {
-        console.log("startGroupStream")
+        this._logger.trace("startGroupStream")
         const _deactivate = async err => console.log("DEACTIVATE: ", err)
-        console.log("Subscribe to group book-stream")
-        this._broker.readGrouStream().then(_deactivate).catch(_deactivate)
+        this._logger.trace("Subscribe to group book-stream")
+        this._broker.readGroupStream().then(_deactivate).catch(_deactivate)
     }
-    postNewBook = async (message: Book): Promise<void>  => this._broker.publish("book-stream", message, "*")
-    subscribe = async (channel: string): Promise<void> => this._broker.subscrube(channel)
+    postNewBook = async (message: Book): Promise<void>  => this._broker.publish("book-stream", JSON.stringify(message), "*")
+    subscribe = async (channel: string): Promise<void> => this._broker.subscribe(channel)
     ack = async (id: string): Promise<boolean> => this._broker.ack(id)
 }

@@ -15,9 +15,7 @@ export class SequelizeConfiguration implements  ISequelizeConfiguration {
 
     get host(): string {
         let host = this.config.get('POSTGRES_HOST')
-        console.log("sequilize:env:host: ", host)
         if(host !== undefined) {
-            console.log("returning sequilize:env:host: ", host)
             return String(host).toLowerCase()
         }
         host = this.config.get("postgres:host")

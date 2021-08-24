@@ -7,3 +7,7 @@ db:
   username:   "booker"
   password:   "booker"
   schema:     "booker"
+logger:
+  path: './'
+  level: 'info'
+  logtofile: 'true'

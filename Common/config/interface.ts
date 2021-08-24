@@ -3,6 +3,7 @@ import { IBookshelfAppConfiguration } from "@app/Bookshelf/config/service";
 import { ISequelizeConfiguration } from "@persist/sequelize/config/service";
 import { IBookParserConfiguration } from "@app/BookParser/config/service";
 import { IRedisConfiguration } from "@persist/redis/config/service";
+import { ILoggerConfiguration} from "@common/logger/config";
 
 //TODO: it brokes the dependency inversion principle - because common configuration interface depends of implementation of each service
 
@@ -13,6 +14,7 @@ export namespace ConfigurationServiceNS {
         "bookparser": IBookParserConfiguration,
         "bookshelf": IBookshelfAppConfiguration,
         "db": ISequelizeConfiguration,
-        "redis": IRedisConfiguration
+        "redis": IRedisConfiguration,
+        'logger': ILoggerConfiguration
     }
 }

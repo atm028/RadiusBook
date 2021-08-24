@@ -7,7 +7,14 @@
   "license": "MIT",
   "private": "true",
   "dependencies": {
-    "lerna": "^4.0.0"
+    "@types/bunyan-format": "^0.2.4",
+    "@types/jest": "^26.0.24",
+    "bunyan": "^1.8.15",
+    "ioredis": "^4.27.6",
+    "jest": "^27.0.6",
+    "lerna": "^4.0.0",
+    "ramda": "^0.27.1",
+    "ts-jest": "^27.0.4"
   },
   "workspaces": [
     "Applications/*"
@@ -16,6 +23,43 @@
     "booker": "lerna run Booker --stream --scope Booker",
     "bookParser": "lerna run BookParser --stream --scope BookParser",
     "bootstrap": "lerna bootstrap",
-    "lint": "eslint --ext .ts ."
+    "lint": "eslint --ext .ts .",
+    "test:unit": "jest --coverage --no-cache ./tests/.*/.*\\.spec\\.ts"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.3"
+  },
+  "include": [
+    "tests/**/*.ts"
+  ],
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!variables/.*)"
+    ],
+    "moduleNameMapper": {
+      "^@persist/(.*)$": [
+        "<rootDir>/Persistence/$1"
+      ],
+      "^@common/(.*)$": [
+        "<rootDir>/Common/$1"
+      ],
+      "^@domains/(.*)$": [
+        "<rootDir>/Domain/$1"
+      ],
+      "^@app/(.*)$": [
+        "<rootDir>/Applications/$1"
+      ],
+      "^@infra/(.*)$": [
+        "<rootDir>/Infrastructure/$1"
+      ],
+      "^@present/(.*)$": [
+        "<rootDir>/Presentation/$1"
+      ]
+    }
   }
 }
