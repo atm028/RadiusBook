@@ -1,12 +1,14 @@
 import "reflect-metadata"
 import * as bunyan from 'bunyan'
-import BunyanFormatWritable from 'bunyan-format'
+import bformat from 'bunyan-format'
 import {inject, injectable} from "inversify";
 import {ConfigurationServiceNS} from "@common/config/interface";
+import * as path from "path";
+import RotatingFileStream from "bunyan-rotating-file-stream";
 
 export const LoggerType = Symbol.for('Logger')
 
-const formatOut = BunyanFormatWritable({outputMode: 'bunyan', levelInString: true, color: true}, process.stdout)
+const formatOut = bformat({outputMode: 'bunyan', levelInString: true}, process.stdout)
 const componentName = 'booker'
 /*
 Use cases:
@@ -35,23 +37,25 @@ export class Logger implements ILogger {
         }]
 
         //TODO: Get logging to file back to life
-//        if(this.config.logger.logtofile) {
-//            const fullName = path.join(this.config.logger.path, `${componentName}_%Y%m%dT%H%M%S%L.log`)
-//            const fileStream = new RotatingFileStream({
-//                path: fullName,
-//                period: '1d',
-//                totalFiles: 10,
-//                rotateExisting: true,
-//                threshold: '100m',
-//                totalSize: 0,
-//                gzip: false,
-//                startNewFile: true
-//            })
-//            streams.push({
-//                level: this.config.logger.level,
-//                stream: fileStream
-//            })
-//        }
+        if(this.config.logger.logtofile) {
+            const fullName = path.join(this.config.logger.path, `${componentName}_%Y%m%dT%H%M%S%L.log`)
+            const fileStream = new RotatingFileStream({
+                path: fullName,
+                period: '1d',
+                totalFiles: 10,
+                rotateExisting: true,
+                threshold: '100m',
+                totalSize: 0,
+                gzip: false,
+                startNewFile: true
+            })
+            streams.push({
+                level: this.config.logger.level,
+                //TODO: fix issue with types mismatch - RotatingFileStream and BunyanFormatWritable
+                //@ts-ignore
+                stream: fileStream
+            })
+        }
 
         this.logger = bunyan.createLogger({
             streams,
@@ -84,7 +88,6 @@ export class Logger implements ILogger {
         if(module !== undefined && this.children.has(module)) {
             const log = this.children.get(module)
             log.level(level.toLowerCase())
-            //TODO: check should we rewrite logger or it's enough just to update level of local const
             this.children.set(module, log)
         }
         if(module === undefined) {

@@ -7,6 +7,8 @@ services:
     restart: always
     ports:
       - 6379:6379
+    volumes:
+      - $DATA_PATH/redis-data:/var/lib/redis
   postgres:
     image: "postgres:13.3"
     container_name: "booker_postgres"
